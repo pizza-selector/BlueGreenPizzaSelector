@@ -58,4 +58,23 @@ jobs:
       with:
         context: ./pizza-backend
         push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/pizza-selector-backend:latest
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/pizza-selector-backend:${{ github.sha }}
+
+  deploy-dev:
+    runs-on: ubuntu-latest
+    environment: DEV
+    needs: build-image
+
+    steps:
+      - name: 'Login via Azure CLI'
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: pizza-selector-be-dev
+          images: 'ghcr.io/${{ secrets.DOCKERHUB_USERNAME }}/pizza-selector-backend:${{ github.sha }}'
