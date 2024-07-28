@@ -23,6 +23,8 @@ jobs:
     defaults:
       run:
         working-directory: ./pizza-backend
+    env:
+      NEW_RELIC_KEY: "${{ secrets.NEW_RELIC_KEY }}"
 
     steps:
     # Checkout the repository to the GitHub Actions runner
@@ -57,7 +59,7 @@ jobs:
       with:
         context: ./pizza-backend
         push: true
-        secret-envs: key=NEW_RELIC_KEY, NEW_RELIC_KEY=${{ secrets.NEW_RELIC_KEY }}
+        secret-envs: key=envname, NEW_RELIC_KEY=NEW_RELIC_KEY
         tags: ${{ secrets.DOCKERHUB_USERNAME }}/pizza-selector-backend:${{ github.sha }}
 
   deploy-dev:
