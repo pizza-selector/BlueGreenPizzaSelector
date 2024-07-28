@@ -57,7 +57,7 @@ jobs:
       with:
         context: ./pizza-backend
         push: true
-        build-args: NEW_RELIC_KEY=${{ secrets.NEW_RELIC_KEY }}
+        secret-envs: key=NEW_RELIC_KEY, NEW_RELIC_KEY=${{ secrets.NEW_RELIC_KEY }}
         tags: ${{ secrets.DOCKERHUB_USERNAME }}/pizza-selector-backend:${{ github.sha }}
 
   deploy-dev:
