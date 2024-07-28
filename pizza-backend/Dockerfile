@@ -8,8 +8,7 @@ COPY ${JAR_FILE} app.jar
 
 COPY newrelic newrelic
 
-RUN --mount=type=bind,target=. \
-  --mount=type=secret,id=NEW_RELIC_KEY \
+RUN --mount=type=secret,id=NEW_RELIC_KEY \
   NEW_RELIC_KEY=$(cat /run/secrets/NEW_RELIC_KEY) envsubst < /newrelic/newrelic.yml.tmp > /newrelic/newrelic.yml
 
 EXPOSE 8080
