@@ -8,8 +8,6 @@ COPY ${JAR_FILE} app.jar
 
 COPY /newrelic /newrelic
 
-ARG NEW_RELIC_KEY=license_key
-ENV NEW_RELIC_KEY=${NEW_RELIC_KEY}
 CMD envsubst '\$NEW_RELIC_KEY' < /newrelic/newrelic.yml.tmp > /newrelic/newrelic.yml
 
 EXPOSE 8080
