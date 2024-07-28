@@ -8,8 +8,6 @@ COPY ${JAR_FILE} app.jar
 
 COPY /newrelic /newrelic
 
-CMD envsubst '\$NEW_RELIC_KEY' < /newrelic/newrelic.yml.tmp > /newrelic/newrelic.yml
-
 EXPOSE 8080
 
 ENTRYPOINT ["java", "-javaagent:/newrelic/newrelic.jar", "-jar","/app.jar"]
