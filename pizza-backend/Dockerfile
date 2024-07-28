@@ -6,11 +6,11 @@ ARG JAR_FILE=build/libs/*.jar
 
 COPY ${JAR_FILE} app.jar
 
-COPY newrelic newrelic
+COPY /newrelic /newrelic
 
-RUN --mount=type=secret,id=NEW_RELIC_KEY \
-  export NEW_RELIC_KEY=$(cat /run/secrets/NEW_RELIC_KEY) && \
-  envsubst < /newrelic/newrelic.yml.tmp > /newrelic/newrelic.yml
+ARG NEW_RELIC_KEY=license_key
+ENV NEW_RELIC_KEY=${NEW_RELIC_KEY}
+CMD envsubst '\$NEW_RELIC_KEY' < /newrelic/newrelic.yml.tmp > /newrelic/newrelic.yml
 
 EXPOSE 8080
 
