@@ -23,8 +23,6 @@ jobs:
     defaults:
       run:
         working-directory: ./pizza-frontend
-    env:
-      NEW_RELIC_KEY: "${{ secrets.NEW_RELIC_KEY }}"
 
     steps:
     # Checkout the repository to the GitHub Actions runner
@@ -36,6 +34,7 @@ jobs:
       with:
         node-version: '20.12.2'
         cache: 'npm'
+        working-directory: ./pizza-frontend
 
     - name: NPM install
       run: npm ci

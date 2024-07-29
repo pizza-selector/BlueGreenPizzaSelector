@@ -23,8 +23,6 @@ jobs:
     defaults:
       run:
         working-directory: ./pizza-backend
-    env:
-      NEW_RELIC_KEY: "${{ secrets.NEW_RELIC_KEY }}"
 
     steps:
     # Checkout the repository to the GitHub Actions runner
