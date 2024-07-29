@@ -34,7 +34,7 @@ jobs:
       with:
         node-version: '20.12.2'
         cache: 'npm'
-        working-directory: ./pizza-frontend
+        cache-dependency-path: '**/package-lock.json'
 
     - name: NPM install
       run: npm ci
