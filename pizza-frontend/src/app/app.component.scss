@@ -1,0 +1,45 @@
+* {
+    font-family: 'Pacifico', cursive;
+  }
+  
+  .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  
+    h1 {
+      font-size: 40px;
+    }
+  
+    h2 {
+      font-size: 36px;
+    }
+  
+    ul {
+      font-size: 26px;
+    }
+  
+    h2, h1, ul {
+      margin: auto;
+      width: fit-content;
+    }
+
+    button {
+      background: transparent;
+      border: none;
+    }
+  }
+  
+  .rotate {
+    animation: rotation 2s infinite linear;
+  }
+  
+  @keyframes rotation {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(359deg);
+    }
+  }

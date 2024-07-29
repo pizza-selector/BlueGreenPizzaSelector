@@ -1,0 +1,16 @@
+<div class="container">
+  <div>
+    <h2 *ngIf="pizza === undefined" data-test-id="random-pizza">Random pizza!</h2>
+    <button (click)="choosePizza()" (keypress)="choosePizza()" tabindex="0" *ngIf="pizza === undefined">
+      <img src="assets/pizza.png" [class.rotate]="animate" alt="pizza">
+    </button>
+    <h2 *ngIf="pizza === undefined">&nbsp;</h2>
+
+    <div *ngIf="pizza !== undefined" data-test-id="pizza-details">
+      <h1>{{pizza?.name}}</h1>
+      <ul>
+        <li *ngFor="let ingredient of ingredients">{{ingredient}}</li>
+      </ul>
+    </div>
+  </div>
+</div>

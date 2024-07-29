@@ -6,7 +6,7 @@ on:
   push:
     branches: [ "main" ]
     paths:
-      - pizza-ui/**
+      - pizza-frontend/**
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./pizza-ui
+        working-directory: ./pizza-frontend
     env:
       NEW_RELIC_KEY: "${{ secrets.NEW_RELIC_KEY }}"
 
@@ -61,7 +61,7 @@ jobs:
     - name: Build and push
       uses: docker/build-push-action@v6
       with:
-        context: ./pizza-ui
+        context: ./pizza-frontend
         push: true
         tags: ${{ secrets.DOCKERHUB_USERNAME }}/pizza-selector-ui:${{ github.sha }}
 
