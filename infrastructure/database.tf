@@ -5,10 +5,10 @@ resource "random_password" "password" {
 }
 
 resource "azurerm_mssql_server" "sql_server" {
-  name                = "pizza-sqlserver-${var.env}"
-  resource_group_name = azurerm_resource_group.pizza_selector_rg.name
-  location            = azurerm_resource_group.pizza_selector_rg.location
-  version             = "12.0"
+  name                         = "pizza-sqlserver-${var.env}"
+  resource_group_name          = azurerm_resource_group.pizza_selector_rg.name
+  location                     = azurerm_resource_group.pizza_selector_rg.location
+  version                      = "12.0"
   administrator_login          = "terraform_administrator_login"
   administrator_login_password = random_password.password.result
 
@@ -34,10 +34,10 @@ resource "azurerm_mssql_database" "db" {
 }
 
 resource "azurerm_mssql_firewall_rule" "azure_firewall_exception" {
-  name                = "AllowAccessFromAzure"
-  server_id           = azurerm_mssql_server.sql_server.id
-  start_ip_address    = "0.0.0.0"
-  end_ip_address      = "0.0.0.0"
+  name             = "AllowAccessFromAzure"
+  server_id        = azurerm_mssql_server.sql_server.id
+  start_ip_address = "0.0.0.0"
+  end_ip_address   = "0.0.0.0"
 }
 
 resource "null_resource" "create-sql-user" {
@@ -51,5 +51,5 @@ resource "null_resource" "create-sql-user" {
     interpreter = ["pwsh", "-Command"]
   }
 
-  depends_on = [ azurerm_mssql_database.db ]
+  depends_on = [azurerm_mssql_database.db]
 }
