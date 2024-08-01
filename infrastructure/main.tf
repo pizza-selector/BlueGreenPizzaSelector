@@ -21,4 +21,8 @@ provider "azurerm" {
 resource "azurerm_resource_group" "pizza_selector_rg" {
   name     = "pizza-selector-${var.env}"
   location = "West Europe"
+
+  tags = {
+    environment = "dev"
+  }
 }
