@@ -164,3 +164,14 @@ jobs:
     # Terraform Apply
     - name: Terraform Apply
       run: terraform apply -auto-approve tfplan
+
+    # Run slq scripts on DB
+    - uses: azure/login@v1
+      with:
+        client-id: ${{ secrets.AZURE_CLIENT_ID }} 
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }} 
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+    - uses: azure/sql-action@v2.3
+      with:        
+        connection-string: 'Server=pizza-sqlserver-dev.database.windows.net;Initial Catalog=master;Authentication=Active Directory Default; Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'
+        path: './infrastructure/sqlscripts/create_user_dev.sql'        
