@@ -14,8 +14,8 @@ resource "azurerm_mssql_server" "sql_server" {
   minimum_tls_version          = "1.2"
 
   azuread_administrator {
-    login_username              = "Pizza Selector"
-    object_id                   = "b05c30c9-c432-4c8d-ae49-1f4528f6ccdc"
+    login_username = "Pizza Selector"
+    object_id      = "b05c30c9-c432-4c8d-ae49-1f4528f6ccdc"
   }
 }
 
