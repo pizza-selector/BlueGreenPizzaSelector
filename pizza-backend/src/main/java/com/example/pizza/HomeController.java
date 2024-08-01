@@ -13,4 +13,9 @@ public class HomeController {
         logger.info("An INFO Message from home!");
 		return "Greetings from Spring Boot!";
 	}
+
+    @GetMapping("/danger")
+	public void dangerZone() throws BadException {
+        throw new BadException("Should not have called it!");
+	}
 }
