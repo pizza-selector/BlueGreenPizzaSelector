@@ -16,8 +16,8 @@ resource "azurerm_linux_web_app" "pizza_selector_be" {
     always_on = false
   }
 
-  app_settings {
-    NEW_RELIC_APP_NAME    = "pizza-selector-be-${var.env}"
-    NEW_RELIC_LICENSE_KEY = var.new_relic_key
+  app_settings = {
+    "NEW_RELIC_APP_NAME"    = "pizza-selector-be-${var.env}"
+    "NEW_RELIC_LICENSE_KEY" = var.new_relic_key
   }
 }
