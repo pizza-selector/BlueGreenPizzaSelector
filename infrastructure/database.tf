@@ -51,5 +51,5 @@ resource "null_resource" "create-sql-user" {
     interpreter = ["pwsh", "-Command"]
   }
 
-  depends_on = ["azurerm_mssql_database.db"]
+  depends_on = [ azurerm_mssql_database.db ]
 }

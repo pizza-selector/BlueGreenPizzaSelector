@@ -11,9 +11,6 @@ terraform {
     azurerm = {
       version = "=3.101.0"
     }
-    mssql = {
-      version = "=0.6.0"
-    }
   }
 }
 
