@@ -26,11 +26,6 @@ resource "azurerm_mssql_database" "db" {
   license_type = "LicenseIncluded"
   max_size_gb  = 2
   sku_name     = "Basic"
-
-  # prevent the possibility of accidental data loss
-  lifecycle {
-    prevent_destroy = true
-  }
 }
 
 resource "azurerm_mssql_firewall_rule" "azure_firewall_exception" {
