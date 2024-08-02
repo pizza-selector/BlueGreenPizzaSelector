@@ -13,7 +13,7 @@ resource "azurerm_mssql_server" "sql_server" {
   }
 
   identity {
-    type         = "SystemAssigned"
+    type = "SystemAssigned"
   }
 }
 
