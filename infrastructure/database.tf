@@ -11,6 +11,10 @@ resource "azurerm_mssql_server" "sql_server" {
     login_username              = "Pizza Selector"
     object_id                   = "dd8e1ef7-e75d-4373-868a-1f331442ba81"
   }
+
+  identity {
+    type         = "SystemAssigned"
+  }
 }
 
 resource "azurerm_mssql_firewall_rule" "azure_firewall_exception" {
