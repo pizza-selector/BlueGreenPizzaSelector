@@ -1,0 +1,27 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+  <preConditions>
+    <dbms type="mssql"/>
+  </preConditions>
+
+  <changeSet author="Pizza-Selector" id="initialize-schema">
+    <sqlFile path="init/schema.sql" relativeToChangelogFile="true"/>
+  </changeSet>
+
+  <changeSet author="Pizza-Selector" id="initialize-pizza-data">
+    <createTable tableName="pizza" schemaName="pizzadata">
+      <column name="id" type="uniqueidentifier" defaultValueComputed="newid()">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="name" type="varchar(256)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="ingridients" type="varchar(256)">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+
+</databaseChangeLog>
