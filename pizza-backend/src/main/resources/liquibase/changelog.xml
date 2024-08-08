@@ -24,4 +24,8 @@
     </createTable>
   </changeSet>
 
+  <changeSet author="Pizza-Selector" id="insert-starting-pizzas">
+    <sql>INSERT INTO pizzadata.pizza (id, name, ingridients) VALUES (newid(), 'first', 'none');</sql>
+  </changeSet>
+
 </databaseChangeLog>
