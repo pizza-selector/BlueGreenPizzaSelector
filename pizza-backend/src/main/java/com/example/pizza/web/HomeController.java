@@ -21,7 +21,7 @@ public class HomeController {
     @GetMapping("/")
 	public String index() {
         logger.info("An INFO Message from home!");
-		return "Greetings from Spring Boot!";
+		return "Delayed greetings from Spring Boot!";
 	}
 
     @GetMapping("/danger")
