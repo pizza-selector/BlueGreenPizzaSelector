@@ -137,7 +137,7 @@ jobs:
       ARM_SUBSCRIPTION_ID: "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
       ARM_TENANT_ID: "${{ secrets.AZURE_TENANT_ID }}"
     environment: DEV
-    needs: [terraform-plan]
+    needs: [terraform-plan-dev]
     
     steps:
     # Checkout the repository to the GitHub Actions runner
