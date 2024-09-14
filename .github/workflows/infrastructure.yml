@@ -66,7 +66,7 @@ jobs:
       id: tf-plan
       run: |
         export exitcode=0
-        terraform plan -var "new_relic_key=${{ secrets.NEW_RELIC_KEY }}" -detailed-exitcode -no-color -out tfplan || export exitcode=$?
+        terraform plan -var "new_relic_key=${{ secrets.NEW_RELIC_KEY }}" -var-file=tfvars/dev.json -detailed-exitcode -no-color -out tfplan || export exitcode=$?
 
         echo "exitcode=$exitcode" >> $GITHUB_OUTPUT
         
@@ -208,7 +208,7 @@ jobs:
       id: tf-plan
       run: |
         export exitcode=0
-        terraform plan -var "new_relic_key=${{ secrets.NEW_RELIC_KEY }}" -detailed-exitcode -no-color -out tfplan-prod || export exitcode=$?
+        terraform plan -var "new_relic_key=${{ secrets.NEW_RELIC_KEY }}" -var-file=tfvars/prod.json -detailed-exitcode -no-color -out tfplan-prod || export exitcode=$?
 
         echo "exitcode=$exitcode" >> $GITHUB_OUTPUT
         
