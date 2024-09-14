@@ -23,8 +23,8 @@ env:
   ARM_USE_OIDC: true
 
 jobs:
-  terraform-plan:
-    name: 'Terraform Plan'
+  terraform-plan-dev:
+    name: 'Terraform Plan - DEV'
     runs-on: ubuntu-latest
     environment: DEV
     defaults:
@@ -125,8 +125,8 @@ jobs:
                 body: body
             })
                 
-  terraform-apply:
-    name: 'Terraform Apply'
+  terraform-apply-dev:
+    name: 'Terraform Apply - DEV'
     if: github.ref == 'refs/heads/main' && needs.terraform-plan.outputs.tfplanExitCode == 2
     runs-on: ubuntu-latest
     defaults:
@@ -165,14 +165,127 @@ jobs:
     - name: Terraform Apply
       run: terraform apply -auto-approve tfplan
 
-    # Run slq scripts on DB
-    - uses: azure/login@v1
+  terraform-plan-prod:
+    name: 'Terraform Plan - PROD'
+    runs-on: ubuntu-latest
+    environment: PROD
+    defaults:
+      run:
+        working-directory: ./infrastructure
+    env:
+      #this is needed since we are running terraform with read-only permissions
+      ARM_SKIP_PROVIDER_REGISTRATION: true
+      ARM_CLIENT_ID: "${{ secrets.AZURE_CLIENT_ID }}"
+      ARM_SUBSCRIPTION_ID: "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
+      ARM_TENANT_ID: "${{ secrets.AZURE_TENANT_ID }}"
+    outputs:
+      tfplanExitCode: ${{ steps.tf-plan.outputs.exitcode }}
+
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    # Install the latest version of the Terraform CLI
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
       with:
-        client-id: ${{ secrets.AZURE_CLIENT_ID }} 
-        tenant-id: ${{ secrets.AZURE_TENANT_ID }} 
-        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-    - uses: azure/sql-action@v2.3
+        terraform_version: "1.8.2"
+        terraform_wrapper: false
+        
+    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    - name: Terraform Init
+      run: terraform init -backend-config="resource_group_name=terraform-prod" -backend-config="storage_account_name=pizzastateprod" -backend-config="container_name=tfstate" -backend-config="key=prod.tfstate"
+
+    # Checks that all Terraform configuration files adhere to a canonical format
+    # Will fail the build if not
+    - name: Terraform Format
+      run: terraform fmt -check
+
+    # Generates an execution plan for Terraform
+    # An exit code of 0 indicated no changes, 1 a terraform failure, 2 there are pending changes.
+    - name: Terraform Plan
+      id: tf-plan
+      run: |
+        export exitcode=0
+        terraform plan -var "new_relic_key=${{ secrets.NEW_RELIC_KEY }}" -detailed-exitcode -no-color -out tfplan-prod || export exitcode=$?
+
+        echo "exitcode=$exitcode" >> $GITHUB_OUTPUT
+        
+        if [ $exitcode -eq 1 ]; then
+          echo Terraform Plan Failed!
+          exit 1
+        else 
+          exit 0
+        fi
+        
+    # Save plan to artifacts  
+    - name: Publish Terraform Plan
+      uses: actions/upload-artifact@v4
       with:
-        skip-firewall-check: true
-        connection-string: 'Server=pizza-sqlserver-dev.database.windows.net;Initial Catalog=master;Authentication=Active Directory Default; Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'
-        path: './infrastructure/sqlscripts/create_user_dev.sql'        
+        name: tfplan-prod
+        path: ./infrastructure/tfplan-prod
+        
+    # Create string output of Terraform Plan
+    - name: Create String Output
+      id: tf-plan-string
+      run: |
+        TERRAFORM_PLAN=$(terraform show -no-color tfplan-prod)
+        
+        delimiter="$(openssl rand -hex 8)"
+        echo "summary<<${delimiter}" >> $GITHUB_OUTPUT
+        echo "## Terraform Plan Output" >> $GITHUB_OUTPUT
+        echo "<details><summary>Click to expand</summary>" >> $GITHUB_OUTPUT
+        echo "" >> $GITHUB_OUTPUT
+        echo '```terraform' >> $GITHUB_OUTPUT
+        echo "$TERRAFORM_PLAN" >> $GITHUB_OUTPUT
+        echo '```' >> $GITHUB_OUTPUT
+        echo "</details>" >> $GITHUB_OUTPUT
+        echo "${delimiter}" >> $GITHUB_OUTPUT
+        
+    # Publish Terraform Plan as task summary
+    - name: Publish Terraform Plan to Task Summary
+      env:
+        SUMMARY: ${{ steps.tf-plan-string.outputs.summary }}
+      run: |
+        echo "$SUMMARY" >> $GITHUB_STEP_SUMMARY
+                
+  terraform-apply-prod:
+    name: 'Terraform Apply - PROD'
+    if: github.ref == 'refs/heads/main' && needs.terraform-plan.outputs.tfplanExitCode == 2
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./infrastructure
+    env:
+      ARM_CLIENT_ID: "${{ secrets.AZURE_CLIENT_ID }}"
+      ARM_SUBSCRIPTION_ID: "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
+      ARM_TENANT_ID: "${{ secrets.AZURE_TENANT_ID }}"
+    environment: PROD
+    needs: [terraform-plan-prod]
+    
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: "1.8.2"
+
+    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    - name: Terraform Init
+      run: terraform init -backend-config="resource_group_name=terraform-prod" -backend-config="storage_account_name=pizzastateprod" -backend-config="container_name=tfstate" -backend-config="key=prod.tfstate"
+
+    # Download saved plan from artifacts  
+    - name: Download Terraform Plan
+      uses: actions/download-artifact@v4
+      with:
+        name: tfplan-prod
+        path: ./infrastructure
+
+    # Terraform Apply
+    - name: Terraform Apply
+      run: terraform apply -auto-approve tfplan-prod
