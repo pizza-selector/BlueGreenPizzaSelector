@@ -3,13 +3,9 @@ package com.example.pizza.web;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
-@SpringBootTest
-@ActiveProfiles("test")
 public class HomeControllerTests {
     public HomeControllerTests() {}
 
@@ -23,7 +19,7 @@ public class HomeControllerTests {
 	@Test
 	public void index_returnsString() {
         var result = controller.index();
-        assertEquals(result, "");
+        assertEquals("Delayed greetings from Spring Boot!", result);
 	}
 
 }
