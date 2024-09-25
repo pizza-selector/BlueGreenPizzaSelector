@@ -33,7 +33,7 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.testcontainers:mssqlserver'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	testRuntimeOnly 'com.microsoft.sqlserver:mssql-jdbc'
+	testRuntimeOnly 'com.microsoft.sqlserver:mssql-jdbc:9.4.1.jre11'
 }
 
 tasks.named('test') {
