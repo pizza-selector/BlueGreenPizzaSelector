@@ -1,0 +1,112 @@
+name: Monorepo CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  paths-filter:
+    runs-on: ubuntu-latest
+    outputs:
+      infra-changes: ${{ steps.filter.outputs.infra }}
+      backend-changes: ${{ steps.filter.outputs.backend }}
+      frontend-changes: ${{ steps.filter.outputs.frontend }}
+    steps:
+    - uses: actions/checkout@v4
+    - uses: dorny/paths-filter@v3
+      id: filter
+      with:
+        filters: |
+          infra:
+            - 'infrastructure/**'
+          backend:
+            - 'pizza-backend/**'
+          frontend:
+            - 'pizza-frontend/**'
+
+  # 1. Lint and Plan Infrastructure Changes (if infra code has changed)
+  infra-dev:
+    runs-on: ubuntu-latest
+    needs: paths-filter
+    if: needs.paths-filter.outputs.infra-changes == 'true'
+    environment: DEV
+    defaults:
+      run:
+        working-directory: ./infrastructure
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.8.2"
+          terraform_wrapper: false
+
+      - name: Format Terraform code
+        run: terraform fmt -check
+
+      - name: Validate Terraform code
+        run: terraform validate
+
+  # 2. Build & Test Frontend App
+  frontend-build:
+    runs-on: ubuntu-latest
+    needs: paths-filter
+    if: needs.paths-filter.outputs.frontend-changes == 'true'
+    environment: DEV
+    defaults:
+      run:
+        working-directory: ./pizza-frontend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20.12.2'
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: NPM install
+        run: npm ci
+                
+      - name: Lint
+        run: npm run lint
+
+      - name: Run tests
+        run: npm run test-ci
+            
+      - name: Build application
+        run: npm run build
+
+  # 3. Build and Test Backend
+  backend-build:
+    runs-on: ubuntu-latest
+    needs: paths-filter
+    if: needs.paths-filter.outputs.backend-changes == 'true'
+    environment: DEV
+    defaults:
+      run:
+        working-directory: ./pizza-backend
+    steps:
+      - name: Checkout
+      uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@dbbdc275be76ac10734476cc723d82dfe7ec6eda # v3.4.2
+
+      - name: Build with Gradle
+        run: |
+          chmod +x ./gradlew
+          ./gradlew build
