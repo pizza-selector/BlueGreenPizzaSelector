@@ -26,7 +26,7 @@ public class HomeController {
 
     @GetMapping("/danger")
 	public void dangerZone() throws BadException {
-        throw new BadException("Should not have called it!..");
+        throw new BadException("Should not have called it!!!");
 	}
 
     @GetMapping("/pizza")
