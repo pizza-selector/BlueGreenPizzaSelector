@@ -77,3 +77,22 @@ jobs:
         with:
           app-name: pizza-selector-be-dev
           images: '${{ secrets.DOCKERHUB_USERNAME }}/pizza-selector-backend:${{ github.sha }}'
+
+  deploy-prod:
+    runs-on: ubuntu-latest
+    environment: PROD
+    needs: deploy-dev
+
+    steps:
+      - name: 'Login via Azure CLI'
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: pizza-selector-be-prod
+          images: '${{ secrets.DOCKERHUB_USERNAME }}/pizza-selector-backend:${{ github.sha }}'
