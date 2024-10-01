@@ -78,6 +78,12 @@ jobs:
           app-name: pizza-selector-be-dev
           images: '${{ secrets.DOCKERHUB_USERNAME }}/pizza-selector-backend:${{ github.sha }}'
 
+      - name: Check http status code of production site
+        uses: lakuapik/gh-actions-http-status@v1
+        with:
+          sites: '["https://pizza-selector-be-dev.azurewebsites.net/actuator/health"]'
+          expected: '[200]'
+
   deploy-prod:
     runs-on: ubuntu-latest
     environment: PROD

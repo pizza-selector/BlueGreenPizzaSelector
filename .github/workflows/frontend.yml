@@ -83,6 +83,12 @@ jobs:
           app-name: pizza-selector-ui-dev
           images: '${{ secrets.DOCKERHUB_USERNAME }}/pizza-selector-ui:${{ github.sha }}'
 
+      - name: Check http status code of production site
+        uses: lakuapik/gh-actions-http-status@v1
+        with:
+          sites: '["https://pizza-selector-ui-dev.azurewebsites.net"]'
+          expected: '[200]'
+
   deploy-prod:
     runs-on: ubuntu-latest
     environment: PROD
