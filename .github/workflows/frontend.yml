@@ -89,8 +89,8 @@ jobs:
     if: github.ref == 'refs/heads/main'
     steps:
       - name: Await manual approval
-        uses: trstringer/manual-approval@v1:
-          timeout-minutes: 120  # Approval within 2 hours
+        uses: trstringer/manual-approval@v1
+        timeout-minutes: 120  # Approval within 2 hours
 
   deploy-prod:
     runs-on: ubuntu-latest
