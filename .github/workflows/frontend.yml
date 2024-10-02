@@ -11,11 +11,6 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-#Special permissions required for OIDC authentication
-permissions:
-  id-token: write
-  contents: read
-
 jobs:
   build-image:
     name: 'Build frontend image'
