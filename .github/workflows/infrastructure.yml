@@ -64,7 +64,8 @@ jobs:
         scan-type: 'config'
         scan-ref: './infrastructure'
         hide-progress: true
-        severity: 'CRITICAL,HIGH,MEDIUM'     
+        severity: 'CRITICAL,HIGH,MEDIUM'
+        exit-code: 1     
       
   terraform-plan-dev:
     name: 'Terraform Plan - DEV'
