@@ -1,4 +1,4 @@
-package com.example.pizza.web;
+package com.example.pizza.actuator;
 
 import java.net.UnknownHostException;
 
