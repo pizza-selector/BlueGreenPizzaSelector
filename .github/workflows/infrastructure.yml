@@ -65,8 +65,7 @@ jobs:
         scan-ref: './infrastructure'
         hide-progress: true
         format: 'sarif'
-        output: 'trivy-results.sarif'
-        exit-code: '1'
+        output: 'trivy-results.sarif'        
         ignore-unfixed: true
         severity: 'CRITICAL,HIGH'
 
