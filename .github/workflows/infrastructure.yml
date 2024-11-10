@@ -58,6 +58,9 @@ jobs:
     - name: Terraform Format
       run: terraform fmt -check
 
+    - name: Terraform Validate
+      run: terraform validate
+
     - name: Run Trivy vulnerability scanner in IaC mode
       uses: aquasecurity/trivy-action@0.28.0
       with:
