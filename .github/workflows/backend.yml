@@ -25,6 +25,10 @@ jobs:
         working-directory: ./pizza-backend
 
     steps:
+    - name: Start Timer
+      id: start_time
+      run: echo "START_TIME=$(date +%s)" >> $GITHUB_ENV
+
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
       uses: actions/checkout@v4
@@ -62,13 +66,15 @@ jobs:
     - name: Send Metrics to New Relic
       run: |
         START_TIME=${{ github.event.workflow_job.created_at }}
-        END_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+        END_TIME=$(date +%s)
         echo "Start: $START_TIME"
         echo "End: $END_TIME"
 
         DURATION=$((END_TIME - START_TIME))
         echo "Total build time: $DURATION seconds"
         curl -X POST "https://api.newrelic.com/v2/metrics" -H "X-Api-Key: ${{ secrets.NEW_RELIC_KEY }}" -d '{"metrics": [{"name": "build.duration", "value": $DURATION}]}'
+      env:
+        START_TIME: ${{ env.START_TIME }}
 
   deploy-dev:
     runs-on: ubuntu-latest
