@@ -25,13 +25,12 @@ jobs:
         working-directory: ./pizza-backend
 
     steps:
-    - name: Start Timer
-      id: start_time
-      run: echo "START_TIME=$(date +%s)" >> $GITHUB_ENV
-
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
       uses: actions/checkout@v4
+
+    - name: Start Timer
+      run: echo "START_TIME=$(date +%s)" >> $GITHUB_ENV
 
     - name: Setup Java
       uses: actions/setup-java@v4
