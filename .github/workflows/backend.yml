@@ -63,9 +63,9 @@ jobs:
       run: |
         START_TIME=${{ github.event.workflow_run.created_at }}
         END_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-        curl -X POST "https://api.newrelic.com/v2/metrics" \
-        -H "X-Api-Key: ${{ secrets.NEW_RELIC_KEY }}" \
-        -d '{"metrics": [{"name": "build.duration", "value": $((END_TIME - START_TIME))}]}'
+        DURATION=$((END_TIME - START_TIME))
+        echo "Total build time: $DURATION seconds"
+        curl -X POST "https://api.newrelic.com/v2/metrics" -H "X-Api-Key: ${{ secrets.NEW_RELIC_KEY }}" -d '{"metrics": [{"name": "build.duration", "value": $DURATION}]}'
 
   deploy-dev:
     runs-on: ubuntu-latest
