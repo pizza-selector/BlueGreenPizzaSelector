@@ -3,7 +3,7 @@ resource "azurerm_service_plan" "app_service_plan_be" {
   resource_group_name = azurerm_resource_group.pizza_selector_rg.name
   location            = azurerm_resource_group.pizza_selector_rg.location
   os_type             = "Linux"
-  sku_name            = "P0V3"
+  sku_name            = "P0v3"
 }
 
 resource "azurerm_linux_web_app" "pizza_selector_be" {
