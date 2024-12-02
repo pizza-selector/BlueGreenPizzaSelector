@@ -12,7 +12,7 @@ resource "azurerm_linux_web_app" "pizza_selector_be" {
   location            = azurerm_service_plan.app_service_plan_be.location
   service_plan_id     = azurerm_service_plan.app_service_plan_be.id
 
-  
+
 
   identity {
     type = "SystemAssigned"
