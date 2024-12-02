@@ -9,7 +9,7 @@ public class PizzaInfoContributor implements InfoContributor{
 
     @Override
     public void contribute(Builder builder) {
-        builder.withDetail("version", "42");
+        builder.withDetail("version", "updated 42");
     }
     
 }
