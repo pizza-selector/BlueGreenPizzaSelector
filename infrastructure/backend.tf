@@ -27,9 +27,9 @@ resource "azurerm_linux_web_app" "pizza_selector_be" {
   }
 }
 
-resource "azurerm_linux_web_app_slot" "example" {
+resource "azurerm_linux_web_app_slot" "pizza_selector_be_slot" {
   name           = "staging-slot"
-  app_service_id = azurerm_linux_web_app.example.id
+  app_service_id = azurerm_linux_web_app.pizza_selector_be.id
 
   identity {
     type = "SystemAssigned"
