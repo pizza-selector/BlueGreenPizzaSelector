@@ -76,7 +76,7 @@ jobs:
         uses: azure/webapps-deploy@v2
         with:
           app-name: pizza-selector-be-dev
-          slot-name:  pizza-selector-be-dev-staging-slot
+          slot-name:  staging-slot
           images: '${{ secrets.DOCKERHUB_USERNAME }}/pizza-selector-backend:${{ github.sha }}'
 
       - name: Check http status code of production site
@@ -86,7 +86,7 @@ jobs:
           expected: '[200]'
 
       - name: Swap slots
-        run: az webapp deployment slot swap -s pizza-selector-be-dev-staging-slot -n pizza-selector-be-dev -g pizza-selector-dev
+        run: az webapp deployment slot swap -s staging-slot -n pizza-selector-be-dev -g pizza-selector-dev
 
   deploy-prod:
     runs-on: ubuntu-latest
