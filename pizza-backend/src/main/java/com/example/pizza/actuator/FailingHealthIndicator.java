@@ -4,6 +4,7 @@ import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.stereotype.Component;
 
+/*
 @Component
 public class FailingHealthIndicator implements HealthIndicator {
 
@@ -12,3 +13,4 @@ public class FailingHealthIndicator implements HealthIndicator {
         return Health.down().withDetail("reason", "Not today").build();        
     }
 }
+*/
